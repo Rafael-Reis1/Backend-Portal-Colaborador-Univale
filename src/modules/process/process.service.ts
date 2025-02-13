@@ -180,15 +180,16 @@ export class ProcessService {
                 tipoAtividade: data.tipoAtividade
             }
         });
-
-        const axiosResponse = [];
-
-        for (const processData of processDatas) {
-            axiosResponse.push(await this.getProcessAxios(processData.processInstanceId));
-        }
-
-        const response = await Promise.all(axiosResponse);
-        return await response.map(response => {
+    
+        // Cria todas as Promises sem esperar por elas
+        const axiosPromises = processDatas.map(processData =>
+            this.getProcessAxios(processData.processInstanceId)
+        );
+    
+        // Aguarda todas as Promises serem resolvidas em paralelo
+        const responses = await Promise.all(axiosPromises);
+    
+        return responses.map(response => {
             if (response) {
                 return response;
             } else {
@@ -196,7 +197,7 @@ export class ProcessService {
                 return null;
             }
         });
-    }
+    }    
 
     async findProcessUserById(user: User, data: processDTO) {
         const processDatas = await this.prisma.process.findMany({
