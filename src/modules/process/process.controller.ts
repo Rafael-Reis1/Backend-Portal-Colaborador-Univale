@@ -42,7 +42,7 @@ export class ProcessController {
   }
 
   @Post('attachments')
-  @UseInterceptors(FilesInterceptor('files', 100, {  
+  @UseInterceptors(FilesInterceptor('files', 1000000, {  
     storage: Multer.memoryStorage(),
   }))
   async uploadFiles(@UploadedFiles() files: Multer.File[], @Body('json') json: string, @CurrentUser() user: User) {
