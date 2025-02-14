@@ -230,7 +230,7 @@ export class ProcessService {
         const baseUrl = `https://fluig.univale.br:8443/process-management/api/v2/requests/${processInstanceId}`;
         //Url com o expand
         //Para usar a requisição sem parametros basta tirar os parametros aqui e em parameters
-        const url = `${baseUrl}?expand=formFields&expand=activities&expand=requester&expand=formRecord&expand=deadlineSpecification`;
+        const url = `${baseUrl}?expand=formFields&expand=activities&expand=deadlineSpecification`;
         const nonce = Math.random().toString(36).substr(2, 10);
         const timestamp = Math.floor(Date.now() / 1000);
     
@@ -242,7 +242,7 @@ export class ProcessService {
             oauth_signature_method: 'HMAC-SHA1',
             oauth_version: '1.0',
             //Precisa colocar o expand aqui tambem
-            expand: ['formFields', 'activities', 'requester', 'formRecord', 'deadlineSpecification']
+            expand: ['formFields', 'activities', 'deadlineSpecification']
         };
     
         const consumerSecret = process.env.CONSUMER_SECRET;
