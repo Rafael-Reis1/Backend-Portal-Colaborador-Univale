@@ -211,7 +211,7 @@ export class ProcessService {
         const axiosResponse = [];
 
         for (const processData of processDatas) {
-            axiosResponse.push(await this.getProcessAxios(processData.processInstanceId));
+            axiosResponse.push(await this.getProcessAxiosNoExpand(processData.processInstanceId));
         }
 
         const response = await Promise.all(axiosResponse);
@@ -267,7 +267,51 @@ export class ProcessService {
         .catch(erro => {
             //console.error(erro);
         });
-    }    
+    }   
+    
+    async getProcessAxiosNoExpand(processInstanceId) {
+        const httpMethod = 'GET';
+        const baseUrl = `https://fluig.univale.br:8443/process-management/api/v2/requests/${processInstanceId}`;
+        //Url com o expand
+        //Para usar a requisição sem parametros basta tirar os parametros aqui e em parameters
+        const url = `${baseUrl}?expand=formFields`;
+        const nonce = Math.random().toString(36).substr(2, 10);
+        const timestamp = Math.floor(Date.now() / 1000);
+    
+        const parameters = {
+            oauth_consumer_key: process.env.CONSUMER_KEY,
+            oauth_token: process.env.ACCESS_TOKEN,
+            oauth_nonce: nonce,
+            oauth_timestamp: timestamp,
+            oauth_signature_method: 'HMAC-SHA1',
+            oauth_version: '1.0',
+            //Precisa colocar o expand aqui tambem
+            expand: ['formFields']
+        };
+    
+        const consumerSecret = process.env.CONSUMER_SECRET;
+        const tokenSecret = process.env.TOKEN_SECRET;
+        const signature = oauthSignature.generate(httpMethod, baseUrl, parameters, consumerSecret, tokenSecret, { encodeSignature: false });
+        
+        const headers = {
+            Authorization: `OAuth oauth_consumer_key="${encodeURIComponent(parameters.oauth_consumer_key)}", oauth_token="${encodeURIComponent(parameters.oauth_token)}", oauth_signature_method="${encodeURIComponent(parameters.oauth_signature_method)}", oauth_timestamp="${encodeURIComponent(parameters.oauth_timestamp)}", oauth_nonce="${encodeURIComponent(parameters.oauth_nonce)}", oauth_version="${encodeURIComponent(parameters.oauth_version)}", oauth_signature="${encodeURIComponent(signature)}"`
+        };
+    
+        const config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url,
+            headers
+        };
+        
+        return await axios.request(config)
+        .then(resposta => {
+            return resposta.data;
+        })
+        .catch(erro => {
+            //console.error(erro);
+        });
+    }
 
     async moveProcessAxios(data: processDTO) {
         let formDataRest = '';
