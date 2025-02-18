@@ -37,13 +37,14 @@ export class ProcessService {
         });
 
         const textArea = JSON.parse(data.textAreaData);
-        const [key] = Object.keys(textArea);
-        let value = textArea[key];
-    
-        formDataSoap += `<item>
+        if(textArea != null && textArea !== undefined) {
+            const [key] = Object.keys(textArea);
+            let value = textArea[key];
+            formDataSoap += `<item>
                                 <item>${key}</item>
                                 <item>${value}</item>
                             </item>`
+        }
 
         const axiosInstance = this.createAxiosInstanceStartProcess();
 
@@ -261,7 +262,7 @@ export class ProcessService {
         };
         
         return await axios.request(config)
-        .then(resposta => {
+        .then(resposta => { 
             return resposta.data;
         })
         .catch(erro => {
