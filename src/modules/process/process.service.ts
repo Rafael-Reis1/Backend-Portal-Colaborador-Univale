@@ -43,8 +43,8 @@ export class ProcessService {
                 if (textArea.hasOwnProperty(key)) {
                 const value = textArea[key];
                 formDataSoap += `<item>
-                                    <key>${key}</key>  
-                                    <value>${value}</value>
+                                    <item>${key}</item>  
+                                    <item>${value}</item>
                                 </item>`;
                 }
             }
