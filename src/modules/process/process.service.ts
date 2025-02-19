@@ -43,12 +43,14 @@ export class ProcessService {
                 if (textArea.hasOwnProperty(key)) {
                 const value = textArea[key];
                 formDataSoap += `<item>
-                                    <key>${key}</key>  
-                                    <value>${value}</value>
+                                    <item>${key}</item>  
+                                    <item>${value}</item>
                                 </item>`;
                 }
             }
         }
+
+        console.log(formDataSoap)
 
         const axiosInstance = this.createAxiosInstanceStartProcess();
 
@@ -151,6 +153,7 @@ export class ProcessService {
           },
           httpsAgent,
           transformResponse: (data) => {
+            console.log(data);
             delete data.req;
             delete data.res;
             return data;
