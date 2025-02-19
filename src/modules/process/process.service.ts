@@ -37,13 +37,17 @@ export class ProcessService {
         });
 
         const textArea = JSON.parse(data.textAreaData);
-        if(textArea != null && textArea !== undefined) {
-            const [key] = Object.keys(textArea);
-            let value = textArea[key];
-            formDataSoap += `<item>
-                                <item>${key}</item>
-                                <item>${value}</item>
-                            </item>`
+
+        if (textArea != null && textArea !== undefined) {
+            for (const key in textArea) {
+                if (textArea.hasOwnProperty(key)) {
+                const value = textArea[key];
+                formDataSoap += `<item>
+                                    <key>${key}</key>  
+                                    <value>${value}</value>
+                                </item>`;
+                }
+            }
         }
 
         const axiosInstance = this.createAxiosInstanceStartProcess();
