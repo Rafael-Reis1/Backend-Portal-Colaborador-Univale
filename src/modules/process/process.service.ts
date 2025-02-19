@@ -50,8 +50,6 @@ export class ProcessService {
             }
         }
 
-        console.log(formDataSoap)
-
         const axiosInstance = this.createAxiosInstanceStartProcess();
 
         const dados = `
@@ -153,7 +151,6 @@ export class ProcessService {
           },
           httpsAgent,
           transformResponse: (data) => {
-            console.log(data);
             delete data.req;
             delete data.res;
             return data;
