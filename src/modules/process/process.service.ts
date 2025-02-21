@@ -198,7 +198,7 @@ export class ProcessService {
         // Aguarda todas as Promises serem resolvidas em paralelo
         const responses = await Promise.all(axiosPromises);
     
-        return Promise.all(responses.map(async response => { // Importante: Promise.all e async
+        return Promise.all(responses.map(async response => {
             if (response) {
                 try {
                     const updatedProcess = await this.prisma.process.update({
@@ -213,7 +213,7 @@ export class ProcessService {
                     return response;
                 } catch (error) {
                     console.error("Erro ao atualizar processo:", error);
-                    return null; // Ou um objeto de erro, dependendo do que você precisa
+                    return null;
                 }
             } else {
                 return null;
