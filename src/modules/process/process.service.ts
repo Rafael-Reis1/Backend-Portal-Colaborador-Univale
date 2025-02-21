@@ -182,7 +182,11 @@ export class ProcessService {
         const processDatas = await this.prisma.process.findMany({
             where: {
                 cpf: user.cpf,
-                tipoAtividade: data.tipoAtividade
+                tipoAtividade: data.tipoAtividade,
+                OR: [
+                    { status: { not: 'CANCELED' } },
+                    { status: null },
+                ],
             }
         });
     
@@ -194,14 +198,27 @@ export class ProcessService {
         // Aguarda todas as Promises serem resolvidas em paralelo
         const responses = await Promise.all(axiosPromises);
     
-        return responses.map(response => {
+        return Promise.all(responses.map(async response => { // Importante: Promise.all e async
             if (response) {
-                return response;
+                try {
+                    const updatedProcess = await this.prisma.process.update({
+                        where: {
+                            cpf: user.cpf,
+                            processInstanceId: parseInt(response.processInstanceId)
+                        },
+                        data: {
+                            status: response.status
+                        }
+                    });
+                    return response;
+                } catch (error) {
+                    console.error("Erro ao atualizar processo:", error);
+                    return null; // Ou um objeto de erro, dependendo do que você precisa
+                }
             } else {
-                //console.error('Error in individual process request:', response);
                 return null;
             }
-        });
+        }));
     }    
 
     async findProcessUserById(user: User, data: processDTO) {

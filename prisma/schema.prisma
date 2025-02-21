@@ -34,7 +34,9 @@ model process {
   cpfGestor String
   documentId String
   createdAt  DateTime @default(now())
+  status String?
   user user @relation(fields: [cpf], references: [cpf])
+   @@unique([processInstanceId])
   @@map("Process")
 }
 
