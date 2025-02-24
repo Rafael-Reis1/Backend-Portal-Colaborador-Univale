@@ -183,6 +183,7 @@ export class ProcessService {
             where: {
                 cpf: user.cpf,
                 tipoAtividade: data.tipoAtividade,
+                processId: data.processId,
                 OR: [
                     { status: { not: 'CANCELED' } },
                     { status: null },
@@ -226,7 +227,8 @@ export class ProcessService {
             where: {
                 cpf: user.cpf,
                 tipoAtividade: data.tipoAtividade,
-                processInstanceId: parseInt(data.processInstanceId.toString())
+                processInstanceId: parseInt(data.processInstanceId.toString()),
+                processId: data.processId
             }
         });
 
