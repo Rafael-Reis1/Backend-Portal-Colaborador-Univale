@@ -14,4 +14,6 @@ export type processDTO = {
     completeTask: string;
     forlderId: number;
     activity: number;
+    token: string;
+    status: string;
 }

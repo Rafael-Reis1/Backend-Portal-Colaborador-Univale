@@ -7,7 +7,6 @@ import { PrismaService } from 'src/database/PrismaService';
 import * as xml2js from 'xml2js';
 import { User } from '../user/entities/user.entity';
 import { processDTO } from './process.dto';
-import { error } from 'console';
 
 @Injectable()
 export class ProcessService {
@@ -180,19 +179,19 @@ export class ProcessService {
     }
         
     async findProcessUser(user: User, data: processDTO) {
-        const processDatas = await this.prisma.process.findMany({
+        return await this.prisma.process.findMany({
             where: {
                 cpf: user.cpf,
                 tipoAtividade: data.tipoAtividade,
-                processId: data.processId,
-                OR: [
-                    { status: { not: 'CANCELED' } },
-                    { status: null },
-                ],
+                processId: data.processId
+            },
+            select: {
+                activity: true,
+                processInstanceId: true
             }
         });
     
-        // Cria todas as Promises sem esperar por elas
+        /*// Cria todas as Promises sem esperar por elas
         const axiosPromises = processDatas.map(processData =>
             this.getProcessAxios(processData.processInstanceId)
         );
@@ -203,7 +202,7 @@ export class ProcessService {
         return Promise.all(responses.map(async response => {
             if (response) {
                 try {
-                    const updatedProcess = await this.prisma.process.update({
+                   await this.prisma.process.update({
                         where: {
                             cpf: user.cpf,
                             processInstanceId: parseInt(response.processInstanceId)
@@ -220,7 +219,7 @@ export class ProcessService {
             } else {
                 return null;
             }
-        }));
+        }));*/
     }    
 
     async findProcessUserById(user: User, data: processDTO) {
@@ -713,28 +712,35 @@ export class ProcessService {
     }
 
     async updateActivity(data: processDTO) {
-        const process = await this.prisma.process.findFirst({
-            where: {
-                processInstanceId: data.processInstanceId
-            }
-        });
-
-        if(process) {
-            const now = new Date();
-            const lastUpdate = now.toISOString();
-            await this.prisma.process.update({
+        if(data.token == process.env.TOKEN_Fluig) {
+            const activity = await this.prisma.process.findFirst({
                 where: {
                     processInstanceId: data.processInstanceId
-                },
-                data: {
-                    activity: data.activity,
-                    lastUpdate: lastUpdate
                 }
             });
-
-            return 'Ok';
+            
+            if(activity) {
+                const now = new Date();
+                const lastUpdate = now.toISOString();
+                await this.prisma.process.update({
+                    where: {
+                        processInstanceId: data.processInstanceId
+                    },
+                    data: {
+                        activity: data.activity,
+                        status: data.status,
+                        lastUpdate: lastUpdate
+                    }
+                });
+    
+                return {
+                    ok: 'ok'
+                };
+            }
+    
+            throw new HttpException('Activity not found!', HttpStatus.NOT_FOUND);
         }
 
-        throw new HttpException('Activity not found!', HttpStatus.NOT_FOUND);
+        throw new HttpException('Token Error!', HttpStatus.UNAUTHORIZED);
     }
 }
