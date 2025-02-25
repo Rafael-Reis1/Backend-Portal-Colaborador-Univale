@@ -7,6 +7,7 @@ import { PrismaService } from 'src/database/PrismaService';
 import * as xml2js from 'xml2js';
 import { User } from '../user/entities/user.entity';
 import { processDTO } from './process.dto';
+import { error } from 'console';
 
 @Injectable()
 export class ProcessService {
@@ -709,5 +710,31 @@ export class ProcessService {
             }
 
         }
+    }
+
+    async updateActivity(data: processDTO) {
+        const process = await this.prisma.process.findFirst({
+            where: {
+                processInstanceId: data.processInstanceId
+            }
+        });
+
+        if(process) {
+            const now = new Date();
+            const lastUpdate = now.toISOString();
+            await this.prisma.process.update({
+                where: {
+                    processInstanceId: data.processInstanceId
+                },
+                data: {
+                    activity: data.activity,
+                    lastUpdate: lastUpdate
+                }
+            });
+
+            return 'Ok';
+        }
+
+        throw new HttpException('Activity not found!', HttpStatus.NOT_FOUND);
     }
 }

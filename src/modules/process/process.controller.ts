@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Put, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Put, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import * as Multer from 'multer';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
@@ -6,6 +6,7 @@ import { User } from '../user/entities/user.entity';
 import { processDTO } from './process.dto';
 import { ProcessService } from './process.service';
 import * as iconv from 'iconv-lite';
+import { IsPublic } from 'src/auth/decorators/is-public.decorator';
 
 @Controller('process')
 export class ProcessController {
@@ -59,5 +60,11 @@ export class ProcessController {
   @Get('attachments/:processInstanceId')
   async getAttachments(@CurrentUser() user: User, @Param('processInstanceId') processInstanceId: string) {
     return this.processService.getAttachments(user, processInstanceId);
+  }
+
+  @IsPublic()
+  @Patch('activity')
+  async updateActivity(@Body() data: processDTO) {
+    return this.processService.updateActivity(data)
   }
 }

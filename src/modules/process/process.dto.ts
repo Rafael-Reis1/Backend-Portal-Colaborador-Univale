@@ -12,5 +12,6 @@ export type processDTO = {
     nomeGestor: string;
     cpfGestor: string;
     completeTask: string;
-    forlderId: number
+    forlderId: number;
+    activity: number;
 }
