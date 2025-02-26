@@ -15,5 +15,4 @@ export type processDTO = {
     forlderId: number;
     activity: number;
     token: string;
-    status: string;
 }

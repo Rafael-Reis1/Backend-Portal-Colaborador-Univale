@@ -728,7 +728,6 @@ export class ProcessService {
                     },
                     data: {
                         activity: data.activity,
-                        status: data.status,
                         lastUpdate: lastUpdate
                     }
                 });
