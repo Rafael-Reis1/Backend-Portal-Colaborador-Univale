@@ -102,7 +102,8 @@ export class ProcessService {
                             tipoAtividade: data.tipoAtividade,
                             nomeGestor: data.nomeGestor,
                             cpfGestor: data.cpfGestor,
-                            documentId: documentId
+                            documentId: documentId,
+                            activity: data.activity
                         },
                     })
 
