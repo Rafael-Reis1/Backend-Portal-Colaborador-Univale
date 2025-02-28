@@ -189,38 +189,12 @@ export class ProcessService {
             select: {
                 activity: true,
                 processInstanceId: true
+            },
+            orderBy: {
+              processInstanceId: 'desc' // Ordena pelo campo processInstanceId em ordem decrescente
             }
+            
         });
-    
-        /*// Cria todas as Promises sem esperar por elas
-        const axiosPromises = processDatas.map(processData =>
-            this.getProcessAxios(processData.processInstanceId)
-        );
-    
-        // Aguarda todas as Promises serem resolvidas em paralelo
-        const responses = await Promise.all(axiosPromises);
-    
-        return Promise.all(responses.map(async response => {
-            if (response) {
-                try {
-                   await this.prisma.process.update({
-                        where: {
-                            cpf: user.cpf,
-                            processInstanceId: parseInt(response.processInstanceId)
-                        },
-                        data: {
-                            status: response.status
-                        }
-                    });
-                    return response;
-                } catch (error) {
-                    console.error("Erro ao atualizar processo:", error);
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        }));*/
     }    
 
     async findProcessUserById(user: User, data: processDTO) {
