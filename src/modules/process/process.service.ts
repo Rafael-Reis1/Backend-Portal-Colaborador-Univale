@@ -191,7 +191,7 @@ export class ProcessService {
                 processInstanceId: true
             },
             orderBy: {
-              processInstanceId: 'desc' // Ordena pelo campo processInstanceId em ordem decrescente
+              processInstanceId: 'desc'
             }
         });
     }    
