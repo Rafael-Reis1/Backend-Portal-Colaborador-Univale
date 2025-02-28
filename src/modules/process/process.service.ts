@@ -193,7 +193,6 @@ export class ProcessService {
             orderBy: {
               processInstanceId: 'desc' // Ordena pelo campo processInstanceId em ordem decrescente
             }
-            
         });
     }    
 
