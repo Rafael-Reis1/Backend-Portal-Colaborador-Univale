@@ -9,8 +9,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "sqlserver"
   url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model user {
@@ -26,7 +27,7 @@ model user {
 
 model process {
   id String @id @default(uuid())
-  processInstanceId Int
+  processInstanceId Int @unique
   processId String
   cpf String
   tipoAtividade String
@@ -37,7 +38,6 @@ model process {
   activity Int?
   lastUpdate DateTime?
   user user @relation(fields: [cpf], references: [cpf])
-  @@unique([processInstanceId])
   @@map("Process")
 }
 
