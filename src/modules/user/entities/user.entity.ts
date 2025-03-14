@@ -6,4 +6,5 @@ export class User {
   tipoAtividade: string[];
   tipoFuncionario: string[];
   nomeGestor: string[];
+  isGestor: boolean;
 }

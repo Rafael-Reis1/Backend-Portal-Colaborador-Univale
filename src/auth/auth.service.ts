@@ -18,9 +18,10 @@ export class AuthService {
             cpfGestor: user.cpfGestor,
             tipoAtividade: user.tipoAtividade,
             tipoFuncionario: user.tipoFuncionario,
-            nomeGestor: user.nomeGestor
+            nomeGestor: user.nomeGestor,
+            isGestor: user.isGestor
         }
-
+        
         const jwtToken = this.jwtService.sign(payload);
 
         return {
@@ -30,6 +31,7 @@ export class AuthService {
 
     async validateUser(cpf: string, password: string, data: CreateUserDto) {
         const user = await this.userService.validateRM(cpf, password);
+        const isGestor = await this.userService.getGestor(cpf);
 
         const resultado = user.data.Resultado;
         const SECAO = [];
@@ -57,6 +59,7 @@ export class AuthService {
         data.tipoAtividade = TIPO_ATIVIDADE;
         data.tipoFuncionario = tipoFuncionario;
         data.nomeGestor = GESTOR_SECAO;
+        data.isGestor = isGestor;
 
         if (user.statusCode == 200) {
             await this.userService.createUser(data);

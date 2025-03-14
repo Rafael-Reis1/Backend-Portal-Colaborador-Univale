@@ -8,4 +8,5 @@ export class CreateUserDto extends User {
   tipoAtividade: string[];
   nomeGestor: string[];
   tipoFuncionario: string[];
+  isGestor: boolean;
 }

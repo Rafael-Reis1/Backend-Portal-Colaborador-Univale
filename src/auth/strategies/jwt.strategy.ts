@@ -16,13 +16,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: UserPayload) {
     return {
-        cpf: payload.cpf,
-        nome: payload.nome,
-        cursoSetor: payload.cursoSetor,
-        cpfGestor: payload.cpfGestor,
-        tipoAtividade: payload.tipoAtividade,
-        tipoFuncionario: payload.tipoFuncionario,
-        nomeGestor: payload.nomeGestor
+      cpf: payload.cpf,
+      nome: payload.nome,
+      cursoSetor: payload.cursoSetor,
+      cpfGestor: payload.cpfGestor,
+      tipoAtividade: payload.tipoAtividade,
+      tipoFuncionario: payload.tipoFuncionario,
+      nomeGestor: payload.nomeGestor,
+      isGestor: payload.isGestor
     }
   }
 }
