@@ -18,7 +18,7 @@ model user {
   id String @id @default(uuid())
   name String
   cpf String @unique
-  //email String @unique
+  isGestor Boolean?
   process process[]
   folders folders[]
   lastLogin DateTime

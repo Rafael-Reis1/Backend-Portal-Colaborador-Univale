@@ -19,10 +19,13 @@ export class UserService {
       }
     })
 
+    const gestor = await this.getGestor(data.cpf);
+
     if(!userExist) {
       return await this.prisma.user.create({data: {
         cpf: data.cpf,
         name: data.nome,
+        isGestor: gestor,
         lastLogin: new Date()
       }});
     }
@@ -34,6 +37,7 @@ export class UserService {
       data: {
         cpf: data.cpf,
         name: data.nome,
+        isGestor: gestor,
         lastLogin: new Date()
       }
     });
@@ -118,6 +122,56 @@ export class UserService {
           error: err.message,
           statusCode: response.status
         };
+      }
+    })
+    .catch((error) => {
+      if (error.response) {
+        return {
+          error: error.message,
+          statusCode: error.response.status
+        };
+      } else {
+        return {
+          error: error.message,
+          statusCode: 500
+        };
+      }
+    });
+  }
+
+  async getGestor(cpf: string): Promise<any> {
+    const axiosInstance = this.createAxiosInstance(process.env.LOGIN_RM, process.env.SENHA_RM);
+
+    const dados = `
+      <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tot="http://www.totvs.com/">
+        <soapenv:Header/>
+        <soapenv:Body>
+          <tot:RealizarConsultaSQL>
+              <tot:codSentenca>FLUIG.SQL.0002</tot:codSentenca>
+              <tot:codColigada>1</tot:codColigada>
+              <tot:codSistema>S</tot:codSistema>
+              <tot:parameters>CPF=${cpf}</tot:parameters>
+          </tot:RealizarConsultaSQL>
+        </soapenv:Body>
+      </soapenv:Envelope>
+    `;
+
+    return await axiosInstance.post('/', dados)
+    .then(async (response) => {
+      try {
+        const jsonData = await this.parser.parseStringPromise(response.data);
+        const sqlResponse = jsonData['s:Envelope']['s:Body'][0].RealizarConsultaSQLResponse[0].RealizarConsultaSQLResult;
+        const sqlResponseJson = await this.parser.parseStringPromise(sqlResponse);
+
+        if(sqlResponseJson.NewDataSet.Resultado[0].COD_SECAO.length > 0) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      } 
+      catch (err) {
+        return false;
       }
     })
     .catch((error) => {

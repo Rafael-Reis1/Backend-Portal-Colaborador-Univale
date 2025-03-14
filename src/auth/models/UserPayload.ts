@@ -9,4 +9,5 @@ export interface UserPayload {
     nomeGestor: string[];
     iat?: number;
     exp?: number;
+    isGestor: boolean;
 }
