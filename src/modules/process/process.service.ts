@@ -183,7 +183,7 @@ export class ProcessService {
             try {
                 const jsonData = await this.parser.parseStringPromise(response.data);
                 const responseData = { data: jsonData, statusCode: response.status };
-          
+                
                 return responseData;
             } catch (err) {
                 return {
@@ -701,7 +701,7 @@ export class ProcessService {
         if(activity) {
             await this.takeTask(userName, password, companyId, data);
 
-            const axiosInstanceDesanexa = this.createAxiosInstanceTakeProcess();
+            const axiosInstanceDesanexa = this.createAxiosInstanceDesanexaAttachments();
         
             const dados = `
                 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.workflow.ecm.technology.totvs.com/">
@@ -779,43 +779,46 @@ export class ProcessService {
 
     async deletaArquivo(documentId) {
         // Parâmetros para OAuth
-        const consumerKey = process.env.CONSUMER_KEY;
-        const token = process.env.ACCESS_TOKEN;
-        const consumerSecret = process.env.CONSUMER_SECRET;
-        const tokenSecret = process.env.TOKEN_SECRET;
-
-        const url = `https://fluig.univale.br:8443/content-management/api/v2/documents/${documentId}`;
-    
-        // Geração do nonce e timestamp para OAuth
+        const httpMethod = 'DELETE';
+        const baseUrl = `https://fluig.univale.br:8443/content-management/api/v2/documents/${documentId}`;
+        //Url com o expand
+        //Para usar a requisição sem parametros basta tirar os parametros aqui e em parameters
+        const url = `${baseUrl}?`;
         const nonce = Math.random().toString(36).substr(2, 10);
         const timestamp = Math.floor(Date.now() / 1000);
     
-        // Parâmetros necessários para OAuth
         const parameters = {
-            oauth_consumer_key: consumerKey,
-            oauth_token: token,
+            oauth_consumer_key: process.env.CONSUMER_KEY,
+            oauth_token: process.env.ACCESS_TOKEN,
             oauth_nonce: nonce,
             oauth_timestamp: timestamp,
             oauth_signature_method: 'HMAC-SHA1',
-            oauth_version: '1.0',
+            oauth_version: '1.0'
+            //Precisa colocar o expand aqui tambem
         };
-
-        // Gerar a assinatura OAuth
-        const signature = oauthSignature.generate('POST', url, parameters, consumerSecret, tokenSecret, { encodeSignature: false });
-
-        // Cabeçalhos de autenticação OAuth
+    
+        const consumerSecret = process.env.CONSUMER_SECRET;
+        const tokenSecret = process.env.TOKEN_SECRET;
+        const signature = oauthSignature.generate(httpMethod, baseUrl, parameters, consumerSecret, tokenSecret, { encodeSignature: false });
+        
         const headers = {
             Authorization: `OAuth oauth_consumer_key="${encodeURIComponent(parameters.oauth_consumer_key)}", oauth_token="${encodeURIComponent(parameters.oauth_token)}", oauth_signature_method="${encodeURIComponent(parameters.oauth_signature_method)}", oauth_timestamp="${encodeURIComponent(parameters.oauth_timestamp)}", oauth_nonce="${encodeURIComponent(parameters.oauth_nonce)}", oauth_version="${encodeURIComponent(parameters.oauth_version)}", oauth_signature="${encodeURIComponent(signature)}"`
         };
-
-        try {
-            const response = await axios.post(url, { headers });
-            return {
-                ok: "ok"
-            };
-        } catch (error) {
-            throw error;
-        }
+    
+        const config = {
+            method: 'delete',
+            maxBodyLength: Infinity,
+            url,
+            headers
+        };
+        
+        return await axios.request(config)
+        .then(resposta => { 
+            return resposta.data;
+        })
+        .catch(erro => {
+            //console.error(erro);
+        });
     }
 
     async updateActivity(data: processDTO) {
