@@ -3,13 +3,13 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as fs from 'fs';
 
-const httpsOptions = {
+/*const httpsOptions = {
   key: fs.readFileSync('./secrets/privadakey36994.key'),
   cert: fs.readFileSync('./secrets/certificadopem36994.pem'),
-};
+};*/
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { httpsOptions });
+  const app = await NestFactory.create(AppModule);
   app.enableCors();
 
   // Pipes
