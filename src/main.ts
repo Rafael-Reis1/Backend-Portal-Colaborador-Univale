@@ -21,7 +21,7 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(3000, 'https://portalcolaborador.univale.br');
+  await app.listen(3000, '127.0.0.1');
   
 }
 bootstrap();
