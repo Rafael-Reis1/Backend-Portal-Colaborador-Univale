@@ -3,6 +3,7 @@ import axios from 'axios';
 import { PrismaService } from 'src/database/PrismaService';
 import * as xml2js from 'xml2js';
 import { CreateUserDto } from './dto/create-user.dto';
+import * as https from 'https';
 
 @Injectable()
 export class UserService {
@@ -19,13 +20,13 @@ export class UserService {
       }
     })
 
-    const gestor = await this.getGestor(data.cpf);
+    const fluigUser = await this.fluigUser(data.cpf);
 
     if(!userExist) {
       return await this.prisma.user.create({data: {
         cpf: data.cpf,
         name: data.nome,
-        isGestor: gestor,
+        fluigUser: fluigUser,
         lastLogin: new Date()
       }});
     }
@@ -37,7 +38,7 @@ export class UserService {
       data: {
         cpf: data.cpf,
         name: data.nome,
-        isGestor: gestor,
+        fluigUser: fluigUser,
         lastLogin: new Date()
       }
     });
@@ -205,4 +206,68 @@ export class UserService {
       },
     });
   }
+
+  async fluigUser(cpf: string) {
+    let userName = process.env.LOGIN_FLUIG;
+    let password = process.env.PASSWORD_FLUIG;
+    let companyId = '1'
+
+    const axiosInstanceFindUser = this.createAxiosInstanceFindfluigUser();
+        
+    const dados = `
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.foundation.ecm.technology.totvs.com/">
+          <soapenv:Header/>
+          <soapenv:Body>
+              <ws:getColleague>
+                <username>${userName}</username>
+                <password>${password}</password>
+                <companyId>${companyId}</companyId>
+                <colleagueId>${cpf}</colleagueId>
+              </ws:getColleague>
+          </soapenv:Body>
+        </soapenv:Envelope>
+    `;
+
+    return await axiosInstanceFindUser.post('/', dados)
+    .then(async (response) => {
+      try {
+        const xmlData = response.data;
+        const parser = new xml2js.Parser({ explicitArray: false });
+        const result = await parser.parseStringPromise(xmlData);
+
+        const activeValue = result['soap:Envelope']['soap:Body']['ns1:getColleagueResponse'].colab.item.active;
+
+        if (activeValue === 'true') {
+          return true;
+        } else {
+          return false;
+        }
+      } catch (error) {
+        return false;
+      }
+    })
+    .catch((error) => {
+      return false;
+    });
+  }
+
+  createAxiosInstanceFindfluigUser() {
+    const httpsAgent = new https.Agent({
+        rejectUnauthorized: false,
+    });
+
+    return axios.create({
+      baseURL: 'https://fluig.univale.br:8443/webdesk/ECMColleagueService?wsdl',
+      headers: {
+        'Content-Type': 'text/xml;charset=UTF-8',
+        'SOAPAction': 'getColleague',
+      },
+      httpsAgent,
+      transformResponse: (data) => {
+        delete data.req;
+        delete data.res;
+        return data;
+      },
+    });
+  }  
 }
