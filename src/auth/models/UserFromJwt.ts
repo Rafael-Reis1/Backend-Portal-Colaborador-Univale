@@ -7,5 +7,5 @@ export interface UserFromJwt {
     tipoAtividade: string[];
     tipoFuncionario: string;
     nomeGestor: string[];
-    isGestor: boolean
+    fluigUser: boolean
 }

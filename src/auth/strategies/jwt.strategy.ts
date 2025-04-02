@@ -23,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       tipoAtividade: payload.tipoAtividade,
       tipoFuncionario: payload.tipoFuncionario,
       nomeGestor: payload.nomeGestor,
-      isGestor: payload.isGestor
+      fluigUser: payload.fluigUser
     }
   }
 }
