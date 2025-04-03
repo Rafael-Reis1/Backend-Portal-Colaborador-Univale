@@ -2,19 +2,21 @@ import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway } from
 import { WsNotificationsService } from './ws-notifications.service';
 import { WsNotification } from './entities/ws-notification.entity';
 import { Server, Socket } from 'socket.io';
+import { UseGuards } from '@nestjs/common';
+import { WsJwtGuard } from 'src/auth/guards/ws-jwt.guard';
+import { SocketAuthMiddleware } from 'src/auth/middleware/ws.mw';
 
 @WebSocketGateway({
   cors: {
       origin: '*',
   },
 })
+@UseGuards(WsJwtGuard)
 export class WsNotificationsGateway {
   constructor(private readonly wsNotificationsService: WsNotificationsService) {}
 
   afterInit(client: Socket) {
-    client.use((req, next) => {
-      
-    });
+    client.use(SocketAuthMiddleware() as any);
   }
 
   @SubscribeMessage('createWsNotification')
