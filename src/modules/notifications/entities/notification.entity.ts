@@ -8,7 +8,8 @@ export class Notification {
     priority: string;
     instanceId: number;
     processId: string;
-    activity: number
+    acitivityName: string;
+    url: string;
     read: boolean;
     createdAt: Date;
     token: string;

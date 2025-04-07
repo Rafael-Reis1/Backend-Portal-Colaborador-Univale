@@ -18,7 +18,8 @@ export class NotificationsService {
           priority: Notification.priority,
           instanceId: Notification.instanceId,
           processId: Notification.processId,
-          activity: Notification.activity
+          acitivityName: Notification.acitivityName,
+          url: Notification.url
         }
       });
     }

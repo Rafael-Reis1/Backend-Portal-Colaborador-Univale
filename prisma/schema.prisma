@@ -60,7 +60,8 @@ model notifications {
   priority String
   instanceId Int
   processId String
-  activity Int
+  acitivityName String
+  url String
   read Boolean @default(false)
   createdAt  DateTime @default(now())
 }
