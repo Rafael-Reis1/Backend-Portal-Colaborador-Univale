@@ -832,7 +832,7 @@ export class ProcessService {
             if(activity) {
                 const now = new Date();
                 const lastUpdate = now.toISOString();
-                await this.prisma.process.update({
+                const updated = await this.prisma.process.update({
                     where: {
                         processInstanceId: data.processInstanceId
                     },
@@ -842,9 +842,13 @@ export class ProcessService {
                     }
                 });
     
-                return {
-                    ok: 'ok'
-                };
+                if(updated) {
+                    return {
+                        ok: 'ok'
+                    };
+                }
+
+                throw new HttpException('Error!', HttpStatus.INTERNAL_SERVER_ERROR);
             }
     
             throw new HttpException('Activity not found!', HttpStatus.NOT_FOUND);

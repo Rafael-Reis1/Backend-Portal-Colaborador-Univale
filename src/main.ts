@@ -8,11 +8,11 @@ async function bootstrap() {
 
   // Pipes
   app.useGlobalPipes(
-    new ValidationPipe({
+    /*new ValidationPipe({
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-    }),
+    }),*/
   );
 
   await app.listen(3000, '127.0.0.1');
