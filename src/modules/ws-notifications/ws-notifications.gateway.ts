@@ -11,6 +11,7 @@ import { WsNotificationsService } from './ws-notifications.service';
 @WebSocketGateway({
   cors: {
       origin: '*',
+      credentials: true,
   },
 })
 @UseGuards(WsJwtGuard)
