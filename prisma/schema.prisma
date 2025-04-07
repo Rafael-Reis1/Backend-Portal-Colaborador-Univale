@@ -56,9 +56,11 @@ model notifications {
   text String
   cpfReceiver String
   cpfSender String?
+  nameSender String
   priority String
   instanceId Int
   processId String
+  activity Int
   read Boolean @default(false)
   createdAt  DateTime @default(now())
 }
