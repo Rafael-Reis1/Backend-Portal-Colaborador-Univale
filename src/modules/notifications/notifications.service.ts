@@ -8,7 +8,7 @@ export class NotificationsService {
 
   async create(Notification: Notification) {
     if(Notification.token == process.env.TOKEN_Fluig) {
-      return await this.prisma.notifications.create({
+      const notification =  await this.prisma.notifications.create({
         data: {
           title: Notification.title,
           text: Notification.text,
@@ -22,6 +22,14 @@ export class NotificationsService {
           url: Notification.url
         }
       });
+
+      if(notification) {
+        return {
+          ok: 'ok'
+        };
+      }
+
+      throw new HttpException('Error!', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     throw new HttpException('Token Error!', HttpStatus.UNAUTHORIZED);
