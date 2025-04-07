@@ -21,7 +21,8 @@ export class NotificationsService {
 
       if(notification) {
         return {
-          ok: 'ok'
+          ok: true,
+          notification: notification
         };
       }
 
