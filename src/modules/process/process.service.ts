@@ -844,7 +844,7 @@ export class ProcessService {
     
                 if(updated) {
                     return {
-                        ok: 'ok'
+                        ok: true
                     };
                 }
 
