@@ -16,7 +16,6 @@ export class WsNotificationsService {
         createdAt: 'asc' 
       },
       omit: {
-        cpfSender: true,
         cpfReceiver: true
       }
     });

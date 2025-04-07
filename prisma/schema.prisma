@@ -52,12 +52,8 @@ model folders {
 
 model notifications {
   id String @id @default(uuid())
-  title String
-  text String
-  cpfReceiver String
-  cpfSender String?
   nameSender String
-  priority String
+  cpfReceiver String
   instanceId Int
   processId String
   acitivityName String

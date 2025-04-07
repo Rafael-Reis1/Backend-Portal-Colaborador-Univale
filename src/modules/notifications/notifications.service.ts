@@ -10,12 +10,8 @@ export class NotificationsService {
     if(Notification.token == process.env.TOKEN_Fluig) {
       const notification =  await this.prisma.notifications.create({
         data: {
-          title: Notification.title,
-          text: Notification.text,
           cpfReceiver: Notification.cpfReceiver,
-          cpfSender: Notification.cpfSender,
           nameSender: Notification.nameSender,
-          priority: Notification.priority,
           instanceId: Notification.instanceId,
           processId: Notification.processId,
           acitivityName: Notification.acitivityName,
