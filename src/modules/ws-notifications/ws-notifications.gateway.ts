@@ -11,8 +11,7 @@ import { WsNotificationsService } from './ws-notifications.service';
 @WebSocketGateway({
   cors: {
       origin: '*'
-  },
-  path: '/api'
+  }
 })
 @UseGuards(WsJwtGuard)
 export class WsNotificationsGateway {
