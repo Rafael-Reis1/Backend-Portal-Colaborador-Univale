@@ -13,7 +13,7 @@ import { WsNotificationsService } from './ws-notifications.service';
       origin: '*'
   }
 })
-@UseGuards(WsJwtGuard)
+//@UseGuards(WsJwtGuard)
 export class WsNotificationsGateway {
   @WebSocketServer()
   server: Server;
@@ -31,9 +31,9 @@ export class WsNotificationsGateway {
     return undefined;
   }
 
-  afterInit(client: Socket) {
+  /*afterInit(client: Socket) {
     client.use(SocketAuthMiddleware() as any);
-  }
+  }*/
 
   handleDisconnect(client: Socket) {
     for (const [cpf, socketId] of this.connectedClients.entries()) {

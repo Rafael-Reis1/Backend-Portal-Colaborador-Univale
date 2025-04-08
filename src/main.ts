@@ -7,13 +7,13 @@ async function bootstrap() {
   app.enableCors();
 
   // Pipes
-  app.useGlobalPipes(
-    /*new ValidationPipe({
+  /*app.useGlobalPipes(
+    new ValidationPipe({
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-    }),*/
-  );
+    }),
+  );*/
 
   await app.listen(3000, '127.0.0.1');
 }
