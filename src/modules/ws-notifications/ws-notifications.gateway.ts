@@ -12,6 +12,7 @@ import { WsNotificationsService } from './ws-notifications.service';
   cors: {
       origin: '*'
   },
+  path: '/api'
 })
 @UseGuards(WsJwtGuard)
 export class WsNotificationsGateway {
@@ -28,7 +29,7 @@ export class WsNotificationsGateway {
         return socketId;
       }
     }
-    return undefined; // Retorna undefined se o CPF não for encontrado
+    return undefined;
   }
 
   afterInit(client: Socket) {
