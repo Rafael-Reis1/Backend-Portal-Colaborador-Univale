@@ -7,11 +7,13 @@ import { SocketAuthMiddleware } from 'src/auth/middleware/ws.mw';
 import { User } from '../user/entities/user.entity';
 import { WsNotification } from './entities/ws-notification.entity';
 import { WsNotificationsService } from './ws-notifications.service';
+import { instrument } from '@socket.io/admin-ui';
 
 @WebSocketGateway({
   cors: {
-      origin: '*',
-  },
+    origin: ["https://admin.socket.io", "https://portalcolaborador.univale.br/"],
+    credentials: true
+  }
 })
 @UseGuards(WsJwtGuard)
 export class WsNotificationsGateway {
@@ -28,11 +30,18 @@ export class WsNotificationsGateway {
         return socketId;
       }
     }
-    return undefined; // Retorna undefined se o CPF não for encontrado
+    return undefined;
   }
 
   afterInit(client: Socket) {
     client.use(SocketAuthMiddleware() as any);
+    instrument(this.server, {
+      auth: {
+        type: "basic",
+        username: "admin",
+        password: "$2b$10$heqvAkYMez.Va6Et2uXInOnkCT6/uQj1brkrbyG3LpopDklcq7ZOS" // "changeit" encrypted with bcrypt
+      },
+    });
   }
 
   handleDisconnect(client: Socket) {
