@@ -35,11 +35,7 @@ export class WsNotificationsGateway {
   afterInit(client: Socket) {
     client.use(SocketAuthMiddleware() as any);
     instrument(this.server, {
-      auth: {
-        type: "basic",
-        username: "admin",
-        password: "$2b$10$heqvAkYMez.Va6Et2uXInOnkCT6/uQj1brkrbyG3LpopDklcq7ZOS" // "changeit" encrypted with bcrypt
-      },
+      auth: false
     });
   }
 
