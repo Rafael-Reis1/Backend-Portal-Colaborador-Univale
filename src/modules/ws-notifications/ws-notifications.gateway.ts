@@ -11,8 +11,7 @@ import { instrument } from '@socket.io/admin-ui';
 
 @WebSocketGateway({
   cors: {
-    origin: ["https://admin.socket.io", "https://portalcolaborador.univale.br/"],
-    credentials: true
+    origin: '*'
   }
 })
 @UseGuards(WsJwtGuard)
